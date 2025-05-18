@@ -1,9 +1,10 @@
 const PORT = 3000;
 
-const SERVER_VERIFICATED = false;
-let JwtSecret = 0;
-let Imgur_client_id = 0;
-let Weather_api_key = 0;
+let SERVER_VERIFICATED = false;
+
+let JwtSecret = "";
+let Imgur_client_id = "";
+let Weather_api_key = "";
 
 const express = require("express");
 const ratelimit = require("express-rate-limit");
@@ -58,7 +59,7 @@ async function addUser(username, password) {
         username,
         hashedPassword,
       ])
-      .then(() => resolve(data.id))
+      .then((data) => resolve(data.id))
       .catch((error) => reject(error));
   });
 }
@@ -66,7 +67,7 @@ async function addUser(username, password) {
 //sessions
 async function verifyJwt(token) {
   try {
-    const decoded = jwt.verify(token);
+    const decoded = jwt.verify(token, JwtSecret); // Add secret
     return decoded;
   } catch (err) {
     return null;
@@ -74,10 +75,10 @@ async function verifyJwt(token) {
 }
 async function createJwt(userId) {
   return new Promise((resolve, reject) => {
-    const token = jwt.sign({ userId }, jwtSecret, {
+    const token = jwt.sign({ userId }, JwtSecret, {
       expiresIn: "30m",
     });
-    const updatetoken = jwt.sign({ userId }, jwtSecret, {
+    const updatetoken = jwt.sign({ userId }, JwtSecret, {
       expiresIn: "3d",
     });
     sessions.set(updatetoken, userId);
@@ -106,7 +107,7 @@ async function checkUser(req, res) {
           resolve(decoded.userId);
         })
         .catch((err) => {
-          reject("Invalid or experied token");
+          reject("Invalid or expired token");
         });
     } else if (updatetoken) {
       verifyJwt(updatetoken)
@@ -122,16 +123,16 @@ async function checkUser(req, res) {
                     resolve(userId);
                   })
                   .catch((err) => {
-                    reject("Invalid or experied token");
+                    reject("Invalid or expired token");
                   });
               })
               .catch((err) => {
-                reject("Invalid or experied token");
+                reject("Invalid or expired token");
               });
           }
         })
         .catch((err) => {
-          reject("Update token used/experied/invalid");
+          reject("Update token used/expired/invalid");
         });
     } else {
       reject("No tokens provided");
@@ -187,12 +188,15 @@ app.get("/join", getLimiter, (req, res) => {
 
 //post requests
 const loginLimiter = ratelimit({
-  windowMs: 30 * 100, // 1 minute
+  windowMs: 30 * 1000, // 30 seconds
   max: 5, // limit each IP to 5 requests per windowMs
   message: "Too many requests, please try again later",
 });
 app.post("/login", loginLimiter, (req, res) => {
   const { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).send("Username and password required");
+  }
   getUserByUsername(username)
     .then((user) => {
       if (user) {
@@ -231,12 +235,21 @@ app.post("/login", loginLimiter, (req, res) => {
     });
 });
 const signupLimiter = ratelimit({
-  windowMs: 60 * 100, // 1 minute
+  windowMs: 60 * 1000, // 1 minute
   max: 5, // limit each IP to 5 requests per windowMs
   message: "Too many requests, please try again later",
 });
-app.post("signup", signupLimiter, (req, res) => {
+app.post("/signup", signupLimiter, (req, res) => {
   const { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).send("Username and password required");
+  }
+  if (username.length < 3 || username.length > 20) {
+    return res.status(400).send("Username must be 3-20 characters");
+  }
+  if (password.length < 8) {
+    return res.status(400).send("Password must be at least 8 characters");
+  }
   getUserByUsername(username)
     .then((user) => {
       if (user) {
@@ -273,11 +286,15 @@ app.post("signup", signupLimiter, (req, res) => {
 app.post(
   "/secretsbyotherservice",
   ratelimit({
-    windowMs: 60 * 100, // 1 minute
+    windowMs: 60 * 1000, // 1 minute
     max: 1, // limit each IP to 5 requests per windowMs
     message: "Too many requests, please try again later",
   }),
   (req, res) => {
+    if (SERVER_VERIFICATED) {
+      res.status(403).send("Server already verified");
+      return;
+    }
     const data = req.body.split(";");
     jwtSecret = data[0];
     Imgur_client_id = data[1];
@@ -287,7 +304,15 @@ app.post(
       max: 30,
     };
     database = pgp(cn);
-    database.connect();
+    database
+      .connect()
+      .then((obj) => {
+        obj.done(); // success
+        console.log("DB connected");
+      })
+      .catch((error) => {
+        console.error("DB connection error:", error);
+      });
     SERVER_VERIFICATED = true;
     res.status(200).send("Data received");
   }
