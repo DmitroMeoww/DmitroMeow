@@ -1,0 +1,12 @@
+{
+  "name": "dmitromeowweb_v2",
+  "version": "2.0.0",
+  "description": "An my site :3",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
