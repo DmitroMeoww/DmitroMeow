@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="logo.png" />
+    <title>Join</title>
+    <meta name="description" content="Join me" />
+  </head>
+  <link rel="stylesheet" href="css/palette.css" />
+  <link rel="stylesheet" href="css/join.css" />
+  <body>
+    <div id="main">
+      <form action="/login" method="post" id="login">
+        <h1>Login</h1>
+        <input
+          placeholder="username"
+          type="text"
+          id="username"
+          name="username"
+        />
+        <input
+          placeholder="password"
+          type="password"
+          id="password"
+          name="password"
+        />
+        <button type="submit">Login</button>
+        <p>Don't have an account? <a href="#" onclick="change()">Sign up</a></p>
+      </form>
+      <form
+        action="/signup"
+        method="post"
+        id="signup"
+        style="transform: translate(-100%); opacity: 0"
+      >
+        <h1>Sign up</h1>
+        <input
+          placeholder="username"
+          type="text"
+          id="username"
+          name="username"
+        />
+        <input
+          placeholder="password"
+          type="password"
+          id="password"
+          name="password"
+        />
+        <button type="submit">Signup</button>
+        <p>Already got an account? <a href="#" onclick="change()">Log in</a></p>
+      </form>
+    </div>
+    <script>
+      let loginDiv = document.getElementById("login");
+      let signupDiv = document.getElementById("signup");
+      let showLogin = true;
+
+      // Animate the loginDiv to go up
+      function change() {
+        showLogin = !showLogin;
+        if (showLogin) {
+          loginDiv.style.transform = "translateX(0)";
+          signupDiv.style.transform = "translateX(-100%)";
+          loginDiv.style.opacity = "1";
+          signupDiv.style.opacity = "0";
+        } else {
+          loginDiv.style.transform = "translateX(-100%)";
+          signupDiv.style.transform = "translateX(0)";
+          loginDiv.style.opacity = "0";
+          signupDiv.style.opacity = "1";
+        }
+      }
+    </script>
+  </body>
+</html>
