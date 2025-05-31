@@ -1,4 +1,3 @@
-<script>
-	import  Button  from '$lib/components/Button.svelte';
-</script>
-<Button appereance="warning">warning</Button>
+<button style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+  Click Me
+</button>
