@@ -110,11 +110,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(async (req, res, next) => {
+  // Exclude API routes and static assets from authentication
+  if (req.path.startsWith("/api") || req.path.match(/\.(css|js|png|jpg|jpeg|gif|svg)$/)) {
+    return next();
+  }
   try {
-    // Example: only check for certain paths, or all except /login, /signup, etc.
-    if (req.path.startsWith("/api")) {
-      return next(); // Skip authentication for API routes
-    }
     await checkUser(req, res); // throws if not authenticated
     if (req.path === "/join") {
       res.redirect("/home");
