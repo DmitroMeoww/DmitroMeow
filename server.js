@@ -11,6 +11,7 @@ import { dirname } from "path";
 
 // @ts-ignore
 import { handler as svelteHandler } from "./svelte/build/handler.js"; // Adjust path as needed
+import { connect } from "http2";
 
 const PORT = 3000;
 
@@ -110,10 +111,24 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(async (req, res, next) => {
-  // Exclude API routes and static assets from authentication
-  if (req.path.startsWith("/api") || req.path.match(/\.(css|js|png|jpg|jpeg|gif|svg)$/)) {
+  if (req.path === "/initpage" && !database) {
     return next();
   }
+  //svelte needed
+  if (req.path.match(/\.(css|js|png|jpg|jpeg|gif|svg)$/)) {
+    return next();
+  }
+  //check db
+  if (!database) {
+    return res
+      .status(503)
+      .send(
+        "Server not ready, waiting admin setup, you can message: Discord: @dmitromeow, Telegram: @dmitromeow, or email: meowdmitro@gmail.com"
+      );
+  } else if (database && req.path.startsWith("/api")) {
+    return next();
+  }
+  //other part
   try {
     await checkUser(req, res); // throws if not authenticated
     if (req.path === "/join") {
@@ -130,7 +145,7 @@ app.use(async (req, res, next) => {
     }
   }
 });
-
+app.use(svelteHandler);
 // post requests
 const loginLimiter = rateLimit({
   windowMs: 30 * 1000,
@@ -204,30 +219,35 @@ app.post("/signup", signupLimiter, async (req, res) => {
     return;
   }
 });
-
-// Example for DB connection (replace with your actual logic)
-const data =
-  "1c0fb5008c573315e7b1e1af5ab41d0ce9b8d4469e41c4d59c3041bd99671208c415fcb0359418dd6bc481863d3d5d030a75364318afbec54cdba082df3f9577;519c7eae1a4a75b;5f6f29da20324c2499e192710251004;postgresql://neondb_owner:npg_YTIMu8Ek2Ucm@ep-summer-sound-a2xoc786-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require".split(
-    ";"
-  );
-JwtSecret = data[0];
-Imgur_client_id = data[1];
-Weather_api_key = data[2];
-const cn = {
-  connectionString: data[3],
-  max: 30,
-};
-database = pgp(cn);
-database
-  .connect()
-  .then((obj) => {
-    app.use(svelteHandler);
-    obj.done();
-    console.log("DB connected");
-  })
-  .catch((error) => {
-    console.error("DB connection error:", error);
-  });
+app.post("/init", async (req, res) => {
+  console.log("new request!");
+  const user = req.header("X-Username");
+  const password = req.header("X-Password");
+  if (!user || !password) {
+    res.status(400).send("Username and password required");
+    return;
+  }
+  try {
+    const cn = {
+      connectionString: `postgresql://${user}:${password}@ep-summer-sound-a2xoc786-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require`,
+    };
+    database = pgp(cn);
+    database.connect().then((obj) => {
+      obj.done();
+      console.log("DB connected");
+    });
+    JwtSecret = database.one("SELECT value FROM env WHERE key = 'JwtSecret'");
+    Imgur_client_id = database.one(
+      "SELECT value FROM env WHERE key = 'ImgurclID'"
+    );
+    Weather_api_key = database.one(
+      "SELECT value FROM env WHERE key = 'WeatherAPI'"
+    );
+  } catch (err) {
+    res.status(500).send("Error connecting to database");
+    return;
+  }
+});
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log("Server started successfully!");
