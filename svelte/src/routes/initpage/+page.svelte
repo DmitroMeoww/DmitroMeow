@@ -2,7 +2,7 @@
   async function handleSubmit(event) {
     event.preventDefault();
     const form = event.target;
-    const username = form.username.value;
+    const username = form.dmeowname.value;
     const password = form.password.value;
 
     await fetch('/init', {
