@@ -3,7 +3,7 @@
     event.preventDefault();
     const form = event.target;
     const username = form.dmeowname.value;
-    const password = form.password.value;
+    const password = form.dmeowpass.value;
 
     await fetch('/init', {
       method: 'POST',
