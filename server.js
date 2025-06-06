@@ -110,42 +110,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(async (req, res, next) => {
-  if (req.path === "/initpage" && !database) {
-    return next();
-  }
-  //svelte needed
-  if (req.path.match(/\.(css|js|png|jpg|jpeg|gif|svg)$/)) {
-    return next();
-  }
-  //check db
-  if (!database) {
-    return res
-      .status(503)
-      .send(
-        "Server not ready, waiting admin setup, you can message: Discord: @dmitromeow, Telegram: @dmitromeow, or email: meowdmitro@gmail.com"
-      );
-  } else if (database && req.path.startsWith("/api")) {
-    return next();
-  }
-  //other part
-  try {
-    await checkUser(req, res); // throws if not authenticated
-    if (req.path === "/join") {
-      res.redirect("/home");
-    } else {
-      return next();
-    }
-  } catch (err) {
-    // Not authenticated, redirect or send error
-    if (req.path === "/join") {
-      next();
-    } else {
-      res.redirect("/join");
-    }
-  }
-});
-app.use(svelteHandler);
 // post requests
 const loginLimiter = rateLimit({
   windowMs: 30 * 1000,
@@ -236,11 +200,13 @@ app.post("/init", async (req, res) => {
       obj.done();
       console.log("DB connected");
     });
-    JwtSecret = database.one("SELECT value FROM env WHERE key = 'JwtSecret'");
-    Imgur_client_id = database.one(
+    JwtSecret = await database.one(
+      "SELECT value FROM env WHERE key = 'JwtSecret'"
+    );
+    Imgur_client_id = await database.one(
       "SELECT value FROM env WHERE key = 'ImgurclID'"
     );
-    Weather_api_key = database.one(
+    Weather_api_key = await database.one(
       "SELECT value FROM env WHERE key = 'WeatherAPI'"
     );
   } catch (err) {
@@ -248,6 +214,43 @@ app.post("/init", async (req, res) => {
     return;
   }
 });
+
+app.use(async (req, res, next) => {
+  if (req.path === "/initpage" && !database) {
+    return next();
+  }
+  //svelte needed
+  if (req.path.match(/\.(css|js|png|jpg|jpeg|gif|svg)$/)) {
+    return next();
+  }
+  //check db
+  if (!database) {
+    return res
+      .status(503)
+      .send(
+        "Server not ready, waiting admin setup, you can message: Discord: @dmitromeow, Telegram: @dmitromeow, or email: meowdmitro@gmail.com"
+      );
+  } else if (database && req.path.startsWith("/api")) {
+    return next();
+  }
+  //other part
+  try {
+    await checkUser(req, res); // throws if not authenticated
+    if (req.path === "/join") {
+      res.redirect("/home");
+    } else {
+      return next();
+    }
+  } catch (err) {
+    // Not authenticated, redirect or send error
+    if (req.path === "/join") {
+      next();
+    } else {
+      res.redirect("/join");
+    }
+  }
+});
+app.use(svelteHandler);
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log("Server started successfully!");
