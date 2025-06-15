@@ -110,6 +110,10 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+app.get("/.well-known/discord", async (req, res) => {
+  return res.send("dh=3725d7d4d289d0da2bf03dfdf924c1036deb4549")
+})
+
 // post requests
 const loginLimiter = rateLimit({
   windowMs: 30 * 1000,
