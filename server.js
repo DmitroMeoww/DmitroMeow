@@ -116,6 +116,21 @@ const loginLimiter = rateLimit({
   max: 5,
   message: "Too many requests, please try again later",
 });
+
+app.post("/public_weather", async (req, res) => {
+  try {
+    const { q, token } = req.body;
+    const response = await axios.post(
+      `http://api.weatherapi.com/v1/current.json?key=${token}&q=${q}&aqi=no`
+    );
+    const data = await response.data;
+    return res.json(data);
+  } catch (err) {
+    res.status(500).send("Error fetching weather data");
+    return;
+  }
+});
+
 app.post("/login", loginLimiter, async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
