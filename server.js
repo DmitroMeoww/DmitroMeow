@@ -16,8 +16,6 @@ import { connect } from "http2";
 const PORT = 3000;
 
 let JwtSecret = "";
-let Imgur_client_id = "";
-let Weather_api_key = "";
 
 const app = express();
 const pgp = pgPromise();
@@ -111,93 +109,79 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // post requests
-const loginLimiter = rateLimit({
-  windowMs: 30 * 1000,
-  max: 5,
-  message: "Too many requests, please try again later",
-});
+// const loginLimiter = rateLimit({
+//   windowMs: 30 * 1000,
+//   max: 5,
+//   message: "Too many requests, please try again later",
+// });
 
-app.post("/public_weather", async (req, res) => {
-  try {
-    const { q, token } = req.body;
-    const response = await axios.post(
-      `http://api.weatherapi.com/v1/current.json?key=${token}&q=${q}&aqi=no`
-    );
-    const data = await response.data;
-    return res.json(data);
-  } catch (err) {
-    res.status(500).send("Error fetching weather data");
-    return;
-  }
-});
+// app.post("/login", loginLimiter, async (req, res) => {
+//   const { username, password } = req.body;
+//   if (!username || !password) {
+//     res.status(400).send("Username and password required");
+//     return;
+//   }
+//   try {
+//     const user = await getUserByUsername(username);
+//     if (user) {
+//       const result = await bcrypt.compare(password, user.password);
+//       if (result) {
+//         const { token, updatetoken } = await createJwt(user.id);
+//         await cookieUser(token, updatetoken, res);
+//         res.redirect("/home");
+//         return;
+//       } else {
+//         res.status(401).send("Invalid password");
+//         return;
+//       }
+//     } else {
+//       res.status(404).send("User not found");
+//       return;
+//     }
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).send("Error logging in");
+//     return;
+//   }
+// });
 
-app.post("/login", loginLimiter, async (req, res) => {
-  const { username, password } = req.body;
-  if (!username || !password) {
-    res.status(400).send("Username and password required");
-    return;
-  }
-  try {
-    const user = await getUserByUsername(username);
-    if (user) {
-      const result = await bcrypt.compare(password, user.password);
-      if (result) {
-        const { token, updatetoken } = await createJwt(user.id);
-        await cookieUser(token, updatetoken, res);
-        res.redirect("/home");
-        return;
-      } else {
-        res.status(401).send("Invalid password");
-        return;
-      }
-    } else {
-      res.status(404).send("User not found");
-      return;
-    }
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Error logging in");
-    return;
-  }
-});
-
-const signupLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 5,
-  message: "Too many requests, please try again later",
-});
-app.post("/signup", signupLimiter, async (req, res) => {
-  const { username, password } = req.body;
-  if (!username || !password) {
-    res.status(400).send("Username and password required");
-    return;
-  }
-  if (username.length < 3 || username.length > 20) {
-    res.status(400).send("Username must be 3-20 characters");
-    return;
-  }
-  if (password.length < 8) {
-    res.status(400).send("Password must be at least 8 characters");
-    return;
-  }
-  try {
-    const user = await getUserByUsername(username);
-    if (user) {
-      res.status(409).send("User already exists");
-      return;
-    } else {
-      const userId = await addUser(username, password);
-      const { token, updatetoken } = await createJwt(userId);
-      await cookieUser(token, updatetoken, res);
-      res.redirect("/home");
-      return;
-    }
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Error signing up");
-    return;
-  }
-});
+// const signupLimiter = rateLimit({
+//   windowMs: 60 * 1000,
+//   max: 5,
+//   message: "Too many requests, please try again later",
+// });
+// app.post("/signup", signupLimiter, async (req, res) => {
+//   const { username, password } = req.body;
+//   if (!username || !password) {
+//     res.status(400).send("Username and password required");
+//     return;
+//   }
+//   if (username.length < 3 || username.length > 20) {
+//     res.status(400).send("Username must be 3-20 characters");
+//     return;
+//   }
+//   if (password.length < 8) {
+//     res.status(400).send("Password must be at least 8 characters");
+//     return;
+//   }
+//   try {
+//     const user = await getUserByUsername(username);
+//     if (user) {
+//       res.status(409).send("User already exists");
+//       return;
+//     } else {
+//       const userId = await addUser(username, password);
+//       const { token, updatetoken } = await createJwt(userId);
+//       await cookieUser(token, updatetoken, res);
+//       res.redirect("/home");
+//       return;
+//     }
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).send("Error signing up");
+//     return;
+//   }
+// });
 app.post("/init", async (req, res) => {
   console.log("new request!");
   const user = req.header("X-Username");
@@ -218,12 +202,6 @@ app.post("/init", async (req, res) => {
     JwtSecret = await database.one(
       "SELECT value FROM env WHERE key = 'JwtSecret'"
     );
-    Imgur_client_id = await database.one(
-      "SELECT value FROM env WHERE key = 'ImgurclID'"
-    );
-    Weather_api_key = await database.one(
-      "SELECT value FROM env WHERE key = 'WeatherAPI'"
-    );
   } catch (err) {
     res.status(500).send("Error connecting to database");
     return;
@@ -231,7 +209,7 @@ app.post("/init", async (req, res) => {
 });
 
 app.use(async (req, res, next) => {
-  if (req.path === "/initpage" && !database) {
+  if (req.path === "/start" && !database) {
     return next();
   }
   //svelte needed
@@ -240,19 +218,16 @@ app.use(async (req, res, next) => {
   }
   //check db
   if (!database) {
-    return res
-      .status(503)
-      .send(
-        "Server not ready, waiting admin setup, you can message: Discord: @dmitromeow, Telegram: @dmitromeow, or email: meowdmitro@gmail.com"
-      );
+    return res.redirect("/unavaible");
   } else if (database && req.path.startsWith("/api")) {
     return next();
   }
   //other part
   try {
+    s;
     await checkUser(req, res); // throws if not authenticated
     if (req.path === "/join") {
-      res.redirect("/home");
+      next();
     } else {
       return next();
     }
@@ -261,7 +236,7 @@ app.use(async (req, res, next) => {
     if (req.path === "/join") {
       next();
     } else {
-      res.redirect("/join");
+      res.redirect("/welcome");
     }
   }
 });
@@ -269,5 +244,4 @@ app.use(svelteHandler);
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log("Server started successfully!");
-  // axios.post("https://hook.eu2.make.com/qjlhykh1cfkr8ygtr7cikfjbqq6jd28p");
 });
