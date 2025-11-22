@@ -73,18 +73,20 @@
 
 <div class="container">
     <h1>{h1text}</h1>
-    <TextFieldOutlined label="Username" bind:value={usernameInput} />
-    <TextFieldOutlined label="Password" bind:value={passwordInput} />
-    <!-- <Button class="submit" on:click={submit}>
+    <TextFieldOutlined required label="Username" bind:value={usernameInput} />
+    <TextFieldOutlined required label="Password" bind:value={passwordInput} />
+    <div class="submit"><Button size="s" on:click={submit}>
       {status}
-    </Button> -->
-    <!-- <button on:click={switchAction} class="switchaction">{otherstatus} <span class="action">{otherstatusaction}</span></button>
+    </Button></div>
+    <div class="switchaction">
+      <Button size="xs" on:click={switchAction}>{otherstatus} {otherstatusaction}</Button>
+    </div>
     <p class="or">or</p>
     Use on:click for OAuth
     <button type="button" class="google" on:click={googleAuth}>
       <img src="https://brandlogos.net/wp-content/uploads/2025/05/google_icon_2025-logo_brandlogos.net_qm5ka-512x523.png" alt="Google logo" width="20" height="20" />
       <p class="siwg">Sign in with Google</p>
-    </button> -->
+    </button>
 </div>
 
 <style>
@@ -110,10 +112,43 @@
     gap: 10px;
   }
   h1 {
-    color: rgb(var(--m3-scheme-primary));
+    color: rgb(var(--m3-scheme-on-background));
     text-align: center;
     font-size: 2rem;
     margin-bottom: 5px;
     font-weight: 600;
+  }
+   .submit {
+    display: flex;
+    justify-content: center;
+  }
+  .switchaction {
+    background-color: transparent;
+    color: var(--color-gray-300);
+    border: none;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-top: 10px;
+    cursor: pointer;
+  }
+  p {
+    color: var(--color-gray-300);
+    text-align: center;
+    font-size: 0.9rem;
+  }
+  .or {
+    color: var(--color-gray-400);
+  }
+  .google {
+    background-color: var(--color-gray-800);
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    height: 40px;
+    border-radius: 4px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.3s ease;
   }
 </style>
