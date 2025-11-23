@@ -1,8 +1,6 @@
 # hiii :3
 
 Welcome to my project!  
-This is DmitroMeowWeb_V2.  
-Made with love, Svelte, and Node.js.
+I learning frameworks etc
 
-> Enjoy your stay!  
-> — DmitroMeow :3
+> Currently NOT HOSTED.
