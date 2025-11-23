@@ -1,13 +1,15 @@
 <script>
   import {Button, TextFieldOutlined, Divider} from "m3-svelte";
-  let status = "Signup";
+  let status = "Sign up";
   let otherstatus = "Already have an account?";
   let otherstatusaction = "Login";
   let h1text = status;
 
   let usernameInput;
   let passwordInput;
-
+  function recoverFunct() {
+    alert("Password recovery is not implemented yet.");
+  }
   function submit(event) {
     fetch("/" + status.toLowerCase(), {
       method: "POST",
@@ -44,12 +46,12 @@
         h1text = h1text.slice(0, -1);
       }, 100 * i);
     }
-    if (status === "Signup") {
+    if (status === "Sign up") {
       status = "Login";
       otherstatus = "Don't have an account?";
-      otherstatusaction = "Signup";
+      otherstatusaction = "Sign up";
     } else {
-      status = "Signup";
+      status = "Sign up";
       otherstatus = "Already have an account?";
       otherstatusaction = "Login";
     }
@@ -73,27 +75,23 @@
 
 <div class="container">
     <h1>{h1text}</h1>
-    <TextFieldOutlined required label="Username" type="text" bind:value={usernameInput} />
-    <TextFieldOutlined required label="Password" type="password" bind:value={passwordInput} />
-    <div class="submit"><Button size="s" style="width: 100%;" square="true" on:click={submit}>
-      {status}
+    <TextFieldOutlined --m3-util-background="rgb(var(--m3-scheme-surface-container))"  required label="Username" type="text" bind:value={usernameInput} />
+    <TextFieldOutlined --m3-util-background="rgb(var(--m3-scheme-surface-container))"  required label="Password" type="password" bind:value={passwordInput} />
+    <div class="submit"><Button size="m" style="height: 100%;width: 100%;" square="true" on:click={submit}>
+      Submit
     </Button></div>
-    <div class="other">
-      <div class="recover">
-        <Button size="xs" style="padding: 13px;" on:click={recover}>Forgot password? Recover</Button>
-      </div>
-      <div class="switchaction">
-        <Button size="xs" style="padding: 13px;" on:click={switchAction}>{otherstatus} {otherstatusaction}</Button>
-      </div>
-    </div>
-    <!-- <p class="or">or</p> -->
-    <Divider>
-      <p class="or">or</p>
-    </Divider>
-    <button type="button" class="google" on:click={googleAuth}>
+    <Button variant="tonal" on:click={googleAuth}>
       <img src="https://brandlogos.net/wp-content/uploads/2025/05/google_icon_2025-logo_brandlogos.net_qm5ka-512x523.png" alt="Google logo" width="20" height="20" />
       <p class="siwg">Sign in with Google</p>
-    </button>
+    </Button> 
+    <div class="other">
+      <div class="rcv">
+        <Button size="xs" variant="text" style="padding: 13px;" on:click={recoverFunct}>Forgot password?</Button>
+      </div>
+      <div class="switchaction">
+        <Button size="xs" variant="text" style="padding: 13px;" on:click={switchAction}>{otherstatus} {otherstatusaction}</Button>
+      </div>
+    </div>
 </div>
 
 <style>
@@ -128,11 +126,13 @@
    .submit {
     display: flex;
     justify-content: center;
+    height: 12%;
   }
   .other {
     /* background-color: black; */
     display: flex;
-    flex-direction:row;
+    flex-direction: column;
+    align-items: center;
     padding: 0;
     gap: 5px
   }
@@ -157,19 +157,15 @@
     text-align: center;
     font-size: 0.9rem;
   }
-  .or {
-    color: var(--color-gray-400);
-  }
-  .google {
-    background-color: var(--m3-scheme-background);
+  /* .google {
+    background-color: black;
     display: flex;
     gap: 10px;
     width: 100%;
     height: 40px;
-    border-radius: 4px;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: 0.3s ease;
-  }
+  } */
 </style>

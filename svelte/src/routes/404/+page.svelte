@@ -3,7 +3,7 @@
 </script>
 <div>
     <h1><span>404</span> - Page not found</h1>
-    <Button size="m" square="true" style="grid-row-start: 3;" variant="filled">Return Home</Button>
+    <Button href="/home" size="m" square="true" style="grid-row-start: 3;" variant="filled">Return Home</Button>
 </div>
 <style>
   :global(body) {

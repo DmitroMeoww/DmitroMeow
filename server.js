@@ -15,92 +15,92 @@ import { connect } from "http2";
 
 const PORT = 3000;
 
-let JwtSecret = "";
+// let JwtSecret = "";
 
 const app = express();
-const pgp = pgPromise();
+// const pgp = pgPromise();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-let database = null;
-const sessions = new Map(); // {token: userId}
+// let database = null;
+// const sessions = new Map(); // {token: userId}
 
-const Access_JWT = {
-  httpOnly: true,
-  secure: true,
-  maxAge: 60 * 30 * 1000, // 30 minutes in ms
-  sameSite: "strict",
-};
-const Update_JWT = {
-  httpOnly: true,
-  secure: true,
-  maxAge: 60 * 60 * 24 * 3 * 1000, // 3 days in ms
-  sameSite: "strict",
-};
+// const Access_JWT = {
+//   httpOnly: true,
+//   secure: true,
+//   maxAge: 60 * 30 * 1000, // 30 minutes in ms
+//   sameSite: "strict",
+// };
+// const Update_JWT = {
+//   httpOnly: true,
+//   secure: true,
+//   maxAge: 60 * 60 * 24 * 3 * 1000, // 3 days in ms
+//   sameSite: "strict",
+// };
 
 // database
-async function getUserByUsername(username) {
-  return database.oneOrNone("SELECT * FROM users WHERE username = $1", [
-    username,
-  ]);
-}
-async function getUserById(id) {
-  return database.oneOrNone("SELECT * FROM users WHERE id = $1", [id]);
-}
-async function addUser(username, password) {
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const data = await database.one(
-    "INSERT INTO users(username, password) VALUES($1, $2) RETURNING id",
-    [username, hashedPassword]
-  );
-  return data.id;
-}
+// async function getUserByUsername(username) {
+//   return database.oneOrNone("SELECT * FROM users WHERE username = $1", [
+//     username,
+//   ]);
+// }
+// async function getUserById(id) {
+//   return database.oneOrNone("SELECT * FROM users WHERE id = $1", [id]);
+// }
+// async function addUser(username, password) {
+//   const hashedPassword = await bcrypt.hash(password, 10);
+//   const data = await database.one(
+//     "INSERT INTO users(username, password) VALUES($1, $2) RETURNING id",
+//     [username, hashedPassword]
+//   );
+//   return data.id;
+// }
 
 // sessions
-async function verifyJwt(token) {
-  try {
-    const decoded = jwt.verify(token, JwtSecret);
-    return decoded;
-  } catch (err) {
-    return null;
-  }
-}
-async function createJwt(userId) {
-  const token = jwt.sign({ userId }, JwtSecret, {
-    expiresIn: "30m",
-  });
-  const updatetoken = jwt.sign({ userId }, JwtSecret, {
-    expiresIn: "3d",
-  });
-  sessions.set(updatetoken, userId);
-  return { token, updatetoken };
-}
-async function cookieUser(token, updatetoken, res) {
-  res.cookie("access_token", token, Access_JWT);
-  res.cookie("update_token", updatetoken, Update_JWT);
-}
-async function checkUser(req, res) {
-  const token = req.cookies["access_token"];
-  const updatetoken = req.cookies["update_token"];
-  if (token) {
-    const decoded = await verifyJwt(token);
-    if (decoded && decoded.userId) return decoded.userId;
-    throw new Error("Invalid or expired token");
-  } else if (updatetoken) {
-    const decoded = await verifyJwt(updatetoken);
-    if (decoded && sessions.get(updatetoken) === decoded.userId) {
-      const { token: newToken, updatetoken: newUpdateToken } = await createJwt(
-        decoded.userId
-      );
-      await cookieUser(newToken, newUpdateToken, res);
-      return decoded.userId;
-    }
-    throw new Error("Update token used/expired/invalid");
-  } else {
-    throw new Error("No tokens provided");
-  }
-}
+// async function verifyJwt(token) {
+//   try {
+//     const decoded = jwt.verify(token, JwtSecret);
+//     return decoded;
+//   } catch (err) {
+//     return null;
+//   }
+// }
+// async function createJwt(userId) {
+//   const token = jwt.sign({ userId }, JwtSecret, {
+//     expiresIn: "30m",
+//   });
+//   const updatetoken = jwt.sign({ userId }, JwtSecret, {
+//     expiresIn: "3d",
+//   });
+//   sessions.set(updatetoken, userId);
+//   return { token, updatetoken };
+// }
+// async function cookieUser(token, updatetoken, res) {
+//   res.cookie("access_token", token, Access_JWT);
+//   res.cookie("update_token", updatetoken, Update_JWT);
+// }
+// async function checkUser(req, res) {
+//   const token = req.cookies["access_token"];
+//   const updatetoken = req.cookies["update_token"];
+//   if (token) {
+//     const decoded = await verifyJwt(token);
+//     if (decoded && decoded.userId) return decoded.userId;
+//     throw new Error("Invalid or expired token");
+//   } else if (updatetoken) {
+//     const decoded = await verifyJwt(updatetoken);
+//     if (decoded && sessions.get(updatetoken) === decoded.userId) {
+//       const { token: newToken, updatetoken: newUpdateToken } = await createJwt(
+//         decoded.userId
+//       );
+//       await cookieUser(newToken, newUpdateToken, res);
+//       return decoded.userId;
+//     }
+//     throw new Error("Update token used/expired/invalid");
+//   } else {
+//     throw new Error("No tokens provided");
+//   }
+// }
 
 // middleware
 app.use(express.json());
@@ -182,64 +182,64 @@ app.use(cookieParser());
 //     return;
 //   }
 // });
-app.post("/init", async (req, res) => {
-  console.log("new request!");
-  const user = req.header("X-Username");
-  const password = req.header("X-Password");
-  if (!user || !password) {
-    res.status(400).send("Username and password required");
-    return;
-  }
-  try {
-    const cn = {
-      connectionString: `postgresql://${user}:${password}@ep-summer-sound-a2xoc786-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require`,
-    };
-    database = pgp(cn);
-    database.connect().then((obj) => {
-      obj.done();
-      console.log("DB connected");
-    });
-    JwtSecret = await database.one(
-      "SELECT value FROM env WHERE key = 'JwtSecret'"
-    );
-  } catch (err) {
-    res.status(500).send("Error connecting to database");
-    return;
-  }
-});
+// app.post("/init", async (req, res) => {
+//   console.log("new request!");
+//   const user = req.header("X-Username");
+//   const password = req.header("X-Password");
+//   if (!user || !password) {
+//     res.status(400).send("Username and password required");
+//     return;
+//   }
+//   try {
+//     const cn = {
+//       connectionString: `postgresql://${user}:${password}@ep-summer-sound-a2xoc786-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require`,
+//     };
+//     database = pgp(cn);
+//     database.connect().then((obj) => {
+//       obj.done();
+//       console.log("DB connected");
+//     });
+//     JwtSecret = await database.one(
+//       "SELECT value FROM env WHERE key = 'JwtSecret'"
+//     );
+//   } catch (err) {
+//     res.status(500).send("Error connecting to database");
+//     return;
+//   }
+// });
 
-app.use(async (req, res, next) => {
-  if (req.path === "/start" && !database) {
-    return next();
-  }
-  //svelte needed
-  if (req.path.match(/\.(css|js|png|jpg|jpeg|gif|svg)$/)) {
-    return next();
-  }
-  //check db
-  if (!database) {
-    return res.redirect("/unavaible");
-  } else if (database && req.path.startsWith("/api")) {
-    return next();
-  }
-  //other part
-  try {
-    s;
-    await checkUser(req, res); // throws if not authenticated
-    if (req.path === "/join") {
-      next();
-    } else {
-      return next();
-    }
-  } catch (err) {
-    // Not authenticated, redirect or send error
-    if (req.path === "/join") {
-      next();
-    } else {
-      res.redirect("/welcome");
-    }
-  }
-});
+// app.use(async (req, res, next) => {
+//   if (req.path === "/start" && !database) {
+//     return next();
+//   }
+//   //svelte needed
+//   if (req.path.match(/\.(css|js|png|jpg|jpeg|gif|svg)$/)) {
+//     return next();
+//   }
+//   //check db
+//   if (!database) {
+//     return res.redirect("/unavaible");
+//   } else if (database && req.path.startsWith("/api")) {
+//     return next();
+//   }
+//   //other part
+//   try {
+//     s;
+//     await checkUser(req, res); // throws if not authenticated
+//     if (req.path === "/join") {
+//       next();
+//     } else {
+//       return next();
+//     }
+//   } catch (err) {
+//     // Not authenticated, redirect or send error
+//     if (req.path === "/join") {
+//       next();
+//     } else {
+//       res.redirect("/welcome");
+//     }
+//   }
+// });
 app.use(svelteHandler);
 
 app.listen(PORT, "0.0.0.0", () => {
