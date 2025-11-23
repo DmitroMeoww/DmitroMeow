@@ -46,19 +46,19 @@
   <TogglePrimitive bind:toggle={itemA}>A</TogglePrimitive>
   <TogglePrimitive bind:toggle= {itemB}>B</TogglePrimitive>
 </ConnectedButtons>
-<SplitButton variant="filled" onclick={() => alert("!")}>
+<SplitButton variant="filled" >
   Hello
   {#snippet menu()}
     and more
   {/snippet}
 </SplitButton>
 <Card variant="filled">Hello</Card>
-<Card variant="filled" onclick={() => alert("!")}>Hello</Card>
+<Card variant="filled" >Hello</Card>
 <div>
   <ListItem headline="Hello" />
   <ListItem headline="Hello" />
 </div>
-<FAB color="primary" icon={iconPlus} onclick={() => alert("!")} />
+<FAB color="primary" icon={iconPlus}  />
 <Menu>
   <MenuItem icon={iconPlus}>Undo</MenuItem>
   <MenuItem icon={iconPlus}>Redo</MenuItem>
@@ -81,7 +81,7 @@
   </Checkbox>
 </label>
 <LoadingIndicator />
-<Chip variant="general" icon={iconPlus} onclick={() => alert("!")}>Hello</Chip>
+<Chip variant="general" icon={iconPlus}>Hello</Chip>
 <LinearProgress percent={60} />
 <LinearProgressEstimate sToHalfway={2} />
 <WavyLinearProgress percent={60} />

@@ -1,5 +1,5 @@
 <script>
-  import {Button, TextFieldOutlined} from "m3-svelte";
+  import {Button, TextFieldOutlined, Divider} from "m3-svelte";
   let status = "Signup";
   let otherstatus = "Already have an account?";
   let otherstatusaction = "Login";
@@ -73,16 +73,23 @@
 
 <div class="container">
     <h1>{h1text}</h1>
-    <TextFieldOutlined required label="Username" bind:value={usernameInput} />
-    <TextFieldOutlined required label="Password" bind:value={passwordInput} />
-    <div class="submit"><Button size="s" on:click={submit}>
+    <TextFieldOutlined required label="Username" type="text" bind:value={usernameInput} />
+    <TextFieldOutlined required label="Password" type="password" bind:value={passwordInput} />
+    <div class="submit"><Button size="s" style="width: 100%;" square="true" on:click={submit}>
       {status}
     </Button></div>
-    <div class="switchaction">
-      <Button size="xs" on:click={switchAction}>{otherstatus} {otherstatusaction}</Button>
+    <div class="other">
+      <div class="recover">
+        <Button size="xs" style="padding: 13px;" on:click={recover}>Forgot password? Recover</Button>
+      </div>
+      <div class="switchaction">
+        <Button size="xs" style="padding: 13px;" on:click={switchAction}>{otherstatus} {otherstatusaction}</Button>
+      </div>
     </div>
-    <p class="or">or</p>
-    Use on:click for OAuth
+    <!-- <p class="or">or</p> -->
+    <Divider>
+      <p class="or">or</p>
+    </Divider>
     <button type="button" class="google" on:click={googleAuth}>
       <img src="https://brandlogos.net/wp-content/uploads/2025/05/google_icon_2025-logo_brandlogos.net_qm5ka-512x523.png" alt="Google logo" width="20" height="20" />
       <p class="siwg">Sign in with Google</p>
@@ -94,10 +101,10 @@
   @import "tailwindcss";
   :global(body) {
     font-family: 'Poppins', sans-serif;
-    background-color: rgb(var(--m3-scheme-surface-container-low));
+    background-color: rgb(var(--m3-scheme-background));
   }
   .container {
-    background-color: rgb(var(--m3-scheme-surface));
+    background-color: rgb(var(--m3-scheme-surface-container));
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -109,10 +116,10 @@
     max-width: 400px;
     padding: 20px;
     border-radius: 8px;
-    gap: 10px;
+    gap: 10px;    
   }
   h1 {
-    color: rgb(var(--m3-scheme-on-background));
+    color: rgb(var(--m3-scheme-on-surface));
     text-align: center;
     font-size: 2rem;
     margin-bottom: 5px;
@@ -122,15 +129,29 @@
     display: flex;
     justify-content: center;
   }
-  .switchaction {
+  .other {
+    /* background-color: black; */
+    display: flex;
+    flex-direction:row;
+    padding: 0;
+    gap: 5px
+  }
+  /* .switchaction {
     background-color: transparent;
-    color: var(--color-gray-300);
     border: none;
     font-size: 0.9rem;
     text-align: center;
     margin-top: 10px;
     cursor: pointer;
   }
+    .recover {
+    background-color: transparent;
+    border: none;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-top: 10px;
+    cursor: pointer;
+  } */
   p {
     color: var(--color-gray-300);
     text-align: center;
@@ -140,7 +161,7 @@
     color: var(--color-gray-400);
   }
   .google {
-    background-color: var(--color-gray-800);
+    background-color: var(--m3-scheme-background);
     display: flex;
     gap: 10px;
     width: 100%;
