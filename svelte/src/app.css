@@ -1,7 +1,0 @@
-@import 'tailwindcss';
-@import 'm3-svelte/misc/styles.css';
-@import 'm3-svelte/misc/recommended-styles.css';
-@import 'm3-svelte/misc/tailwind-styles.css';
-:root {
-	--m3-util-density: 1;
-}
