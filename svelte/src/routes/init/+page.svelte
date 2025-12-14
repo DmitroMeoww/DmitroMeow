@@ -17,8 +17,8 @@
 
 <form class="container">
     <h1>Start up your server!</h1>
-    <TextFieldOutlined --m3-util-background="rgb(var(--m3-scheme-surface-container))"  required label="Username" type="text" bind:value={usernameInput} />
-    <TextFieldOutlined --m3-util-background="rgb(var(--m3-scheme-surface-container))"  required label="Password" type="password" bind:value={passwordInput} />
+    <TextFieldOutlined --m3-util-background="rgb(var(--m3-scheme-surface-container))"  required label="Username" type="us" bind:value={usernameInput} />
+    <TextFieldOutlined --m3-util-background="rgb(var(--m3-scheme-surface-container))"  required label="Password" type="db" bind:value={passwordInput} />
     <div class="submit"><Button size="m" style="height: 100%;width: 100%;" square="true" on:click={submit}>
       Submit
     </Button></div>
