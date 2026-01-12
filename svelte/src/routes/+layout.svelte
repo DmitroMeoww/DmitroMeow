@@ -1,11 +1,8 @@
-<script lang="ts">
-	import favicon from '$lib/assets/favicon.svg';
-
+<script>
+	import '../app.css';
+	import { grey_theme, blue_theme, green_theme, pink_theme } from "./state";
 	let { children } = $props();
+
 </script>
-
-<svelte:head>
-	<link rel="icon" href={favicon} />
-</svelte:head>
-
+{@html `<style>${$green_theme}</style>`}
 {@render children()}

@@ -1,0 +1,5 @@
+@import 'm3-svelte/misc/styles.css';
+@import 'm3-svelte/misc/recommended-styles.css';
+@function --m3-density(--size) {
+	result: var(--size);
+}
