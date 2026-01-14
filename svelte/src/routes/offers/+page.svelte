@@ -4,5 +4,5 @@ import Sidebar from "$lib/sidebar.svelte";
 <Sidebar />
 
 <svelte:head>
-	<title>Статті - OptaVideo</title>
+	<title>Послуги - OptaVideo</title>
 </svelte:head>

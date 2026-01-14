@@ -2,11 +2,12 @@
 import {FAB, NavCMLX, NavCMLXItem} from "m3-svelte"
 import iconCart from "@ktibow/iconset-material-symbols/shopping-cart-rounded";
 import iconGrid from "@ktibow/iconset-material-symbols/grid-view";
-import iconContacts from "@ktibow/iconset-material-symbols/contacts";
+import iconHandshake from "@ktibow/iconset-material-symbols/handshake";
 import iconInfo from "@ktibow/iconset-material-symbols/info";
 import iconArticle from "@ktibow/iconset-material-symbols/article";
 import iconBuild from "@ktibow/iconset-material-symbols/build";
 import iconBaseline from "@ktibow/iconset-material-symbols/build-circle";
+
 import { page } from "$app/stores";
 import { onMount, onDestroy } from 'svelte';
 let mode = 1;
@@ -63,10 +64,10 @@ onMount(() => {
     />
     <NavCMLXItem
       variant="large"
-      icon={iconContacts}
-      text="Контакти"
-      selected={$page.url.pathname === "/contacts"}
-      href="/contacts"
+      icon={iconHandshake}
+      text="Послуги"
+      selected={$page.url.pathname === "/offers"}
+      href="/offers"
     />
   </NavCMLX>
 </div>
@@ -88,7 +89,7 @@ onMount(() => {
       icon={iconGrid}
       text="Каталог"
       selected={$page.url.pathname === "/catalog"}
-      href="/catalog"
+      href="/offers"
     />
     <NavCMLXItem
       variant="medium"
@@ -106,10 +107,10 @@ onMount(() => {
     />
     <NavCMLXItem
       variant="medium"
-      icon={iconContacts}
-      text="Контакти"
-      selected={$page.url.pathname === "/contacts"}
-      href="/contacts"
+      icon={iconHandshake}
+      text="Послуги"
+      selected={$page.url.pathname === "/offers"}
+      href="/offers"
     />
   </NavCMLX>
 </div>
@@ -149,10 +150,10 @@ onMount(() => {
     />
     <NavCMLXItem
       variant="compact"
-      icon={iconContacts}
-      text="Контакти"
-      selected={$page.url.pathname === "/contacts"}
-      href="/contacts"
+      icon={iconHandshake}
+      text="Послуги"
+      selected={$page.url.pathname === "/offers"}
+      href="/offers"
     />
   </NavCMLX>
 </div>
@@ -161,7 +162,7 @@ onMount(() => {
     #NavRail {
         width: 96px;
         height: 100vh;
-        background-color: var(--m3c-surface-container-high);
+        background-color: var(--m3c-surface-container);
         position: absolute;
         top: 0;
         left: 0;
