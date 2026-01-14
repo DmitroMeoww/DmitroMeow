@@ -13,7 +13,6 @@ import { dirname } from "path";
 import { handler as svelteHandler } from "./svelte/build/handler.js"; // Adjust path as needed
 import { connect } from "http2";
 import { redirect } from "@sveltejs/kit";
-import { P } from "./svelte/build/server/chunks/index-Baf4Ay3Q.js";
 
 const PORT = 3000;
 
@@ -210,44 +209,44 @@ app.use(cookieParser());
 //   }
 // });
 
-app.use(async (req, res, next) => {
-  //Init part, if yes - redirect to /welcome
-  if (req.path === "/init") {
-    if (!database) {
-      return next();
-    } else {
-      redirect("/welcome");
-    }
-  }
-  //Checking databse, if not - redirect to /off
-  if ((req.path !== "/init" && !database) || req.path === "/off") {
-    return res.redirect("/off");
-  }
-  //Static files for Svelte
-  if (req.path.match(/\.(css|js|png|jpg|jpeg|gif|svg)$/)) {
-    return next();
-  }
-  //API
-  if (database && req.path.startsWith("/api")) {
-    return next();
-  }
-  //other part
-  try {
-    await checkUser(req, res); // throws if not authenticated
-    if (req.path === "/join") {
-      return res.redirect("/home");
-    } else {
-      return next();
-    }
-  } catch (err) {
-    // Not authenticated, redirect or send error
-    if (req.path === "/join" || req.path === "/welcome") {
-      next();
-    } else {
-      res.redirect("/welcome");
-    }
-  }
-});
+// app.use(async (req, res, next) => {
+//   //Init part, if yes - redirect to /welcome
+//   if (req.path === "/init") {
+//     if (!database) {
+//       return next();
+//     } else {
+//       redirect("/welcome");
+//     }
+//   }
+//   //Checking databse, if not - redirect to /off
+//   if ((req.path !== "/init" && !database) || req.path === "/off") {
+//     return res.redirect("/off");
+//   }
+//   //Static files for Svelte
+//   if (req.path.match(/\.(css|js|png|jpg|jpeg|gif|svg)$/)) {
+//     return next();
+//   }
+//   //API
+//   if (database && req.path.startsWith("/api")) {
+//     return next();
+//   }
+//   //other part
+//   try {
+//     await checkUser(req, res); // throws if not authenticated
+//     if (req.path === "/join") {
+//       return res.redirect("/home");
+//     } else {
+//       return next();
+//     }
+//   } catch (err) {
+//     // Not authenticated, redirect or send error
+//     if (req.path === "/join" || req.path === "/welcome") {
+//       next();
+//     } else {
+//       res.redirect("/welcome");
+//     }
+//   }
+// });
 app.use(svelteHandler);
 
 app.listen(PORT, "0.0.0.0", () => {
