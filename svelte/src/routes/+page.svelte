@@ -1,102 +1,85 @@
-<script>
-  import {DateField, DateFieldOutlined, Tabs, TextField, Switch, Slider, Select, Button, RadioAnim1, ConnectedButtons, TogglePrimitive, SplitButton,
-     CircularProgressEstimate, Chip, LoadingIndicator, CircularProgress, Card, ListItem, WavyLinearProgressEstimate,
-      WavyLinearProgress, Menu, LinearProgressEstimate, MenuItem, FAB, BottomSheet, LinearProgress, Dialog,
-       Checkbox} from "m3-svelte";
-  import iconPlus from "@ktibow/iconset-material-symbols/add"
-    import { snackbar } from "m3-svelte";
-  let itemA = true;
-  let itemB = false;
-  let open = false;
-  let on = false;
-  let stuff = "one";
-  let value = "";
-  let n = 0;
-  let text= "";
-  let tab = "a";
-  
+<script lang="ts">
+import {FAB, NavCMLX, NavCMLXItem} from "m3-svelte"
+import iconCart from "@ktibow/iconset-material-symbols/shopping-cart-rounded";
+import iconGrid from "@ktibow/iconset-material-symbols/grid-view";
+import iconContacts from "@ktibow/iconset-material-symbols/contacts";
+import iconInfo from "@ktibow/iconset-material-symbols/info";
+import iconArticle from "@ktibow/iconset-material-symbols/article";
+import iconBuild from "@ktibow/iconset-material-symbols/build";
+import iconBaseline from "@ktibow/iconset-material-symbols/build-circle";
+import { page } from "$app/stores";
 </script>
-<Tabs
-  items={[
-    { name: "A", value: "a" },
-    { name: "B", value: "b" },
-  ]}
-  bind:tab
-/>
-<label>
-  <Switch bind:checked={on} />
-</label>
-<DateField label="Date" bind:value />
-<DateFieldOutlined label="Date" bind:value />
-<TextField label="Field" bind:value={text} />
-<Slider bind:value={n} />
-<!-- <RadioAnim1><input type="radio" name="stuff" value="one" bind:group={stuff} /></RadioAnim1>
-<RadioAnim1><input type="radio" name="stuff" value="two" bind:group={stuff} /></RadioAnim1>
-<RadioAnim1><input type="radio" name="stuff" value="three" bind:group={stuff} /></RadioAnim1> -->
-<Button variant="filled">Hello</Button>
-<Select
-  label="Select"
-  options={[
-    { text: "A", value: "a" },
-    { text: "B", value: "b" },
-  ]}
-  bind:value
-/>
-<ConnectedButtons>
-  <TogglePrimitive bind:toggle={itemA}>A</TogglePrimitive>
-  <TogglePrimitive bind:toggle= {itemB}>B</TogglePrimitive>
-</ConnectedButtons>
-<!-- <SplitButton variant="filled" > -->
-  <!-- Hello
-  {#snippet menu()}
-    and more
-  {/snippet} -->
-<!-- </SplitButton> -->
-<Card variant="filled">Hello</Card>
-<Card variant="filled" >Hello</Card>
-<div>
-  <ListItem headline="Hello" />
-  <ListItem headline="Hello" />
+
+<div id="NavRail">
+<div id="MenuFab">
+    <div class="MenuFabItem">
+        <img id="Logo" src="/logo_mobile.png" alt="Logo" />
+    </div>
+    <div class="MenuFabItem">
+        <FAB color="primary" icon={iconCart} onclick={() => alert("!")} />
+    </div>
 </div>
-<!-- <FAB color="primary" icon={iconPlus}  />
-<Menu>
-  <MenuItem icon={iconPlus}>Undo</MenuItem>
-  <MenuItem icon={iconPlus}>Redo</MenuItem>
-  <MenuItem icon={iconPlus}>Cut</MenuItem>
-</Menu> -->
-{#if open}
-  <BottomSheet close={() => (open = false)}>Hello</BottomSheet>
-{/if}
-<Dialog headline="Hello" bind:open>
-  I'm alive
-  {#snippet buttons()}
-    <Button variant="tonal">OK</Button>
-  {/snippet}
-</Dialog>
-<Button variant="tonal" onclick={() => snackbar("Hello", undefined, true)}>Show</Button>
-<!-- <NewSnackbar /> -->
-<label>
-  <Checkbox>
-    <input type="checkbox" bind:checked={on} />
-  </Checkbox>
-</label>
-<LoadingIndicator />
-<!-- <Chip variant="general" icon={iconPlus}>Hello</Chip> -->
-<LinearProgress percent={60} />
-<LinearProgressEstimate sToHalfway={2} />
-<WavyLinearProgress percent={60} />
-<WavyLinearProgressEstimate sToHalfway={2} />
-<CircularProgress percent={60} />
-<CircularProgressEstimate sToHalfway={2} />
-<style>
-:global(body) {
-  padding: 20px;
-  gap: 10px;
-  display: flex;
-  flex-direction: column;
-  width: 350px;
-  height: 70vh; /* constrain height so items wrap into new columns */
-  flex-wrap: wrap;
-  align-content: flex-start;
-}
+<NavCMLX variant="large">
+  <NavCMLXItem
+    variant="large"
+    icon={iconGrid}
+    text="Каталог"
+    selected={$page.url.pathname === "/"}
+    href="/welcome"
+  />
+  <NavCMLXItem
+    variant="large"
+    icon={iconArticle}
+    text="Статті"
+    selected={$page.url.pathname === "/"}
+    href="/welcome"
+  />
+        <NavCMLXItem
+    variant="large"
+    icon={iconBuild}
+    text="Сервіс"
+    selected={$page.url.pathname === "/"}
+    href="/welcome"
+  />
+      <NavCMLXItem
+    variant="large"
+    icon={iconInfo}
+    text="Про нас"
+    selected={$page.url.pathname === "/"}
+    href="/welcome"
+  />
+  <NavCMLXItem
+    variant="large"
+    icon={iconContacts}
+    text="Контакти"
+    selected={$page.url.pathname === "/"}
+    href="/welcome"
+  />
+</NavCMLX>
+</div>
+
+<style lang="css">
+    #NavRail {
+        width: 96px;
+        height: 100vh;
+        background-color: #000;
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding-top: 40px;
+        padding-bottom: 56px;
+        gap: 40px;
+        display: flex;
+        flex-direction: column;
+    }
+    #MenuFab {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 16px;
+    }
+    #Logo {
+        color: var(--m3c-primary);
+    }
 </style>

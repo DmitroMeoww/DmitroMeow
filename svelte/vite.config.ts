@@ -2,9 +2,10 @@ import devtoolsJson from 'vite-plugin-devtools-json';
 import { defineConfig } from 'vitest/config';
 import { playwright } from '@vitest/browser-playwright';
 import { sveltekit } from '@sveltejs/kit/vite';
+import { functionsMixins } from 'vite-plugin-functions-mixins';
 
 export default defineConfig({
-	plugins: [sveltekit(), devtoolsJson()],
+	plugins: [sveltekit(), devtoolsJson(), functionsMixins({ deps: ['m3-svelte'] })],
 
 	test: {
 		expect: { requireAssertions: true },
