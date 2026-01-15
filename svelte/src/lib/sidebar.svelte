@@ -6,6 +6,7 @@ import iconHandshake from "@ktibow/iconset-material-symbols/handshake";
 import iconInfo from "@ktibow/iconset-material-symbols/info";
 import iconArticle from "@ktibow/iconset-material-symbols/article";
 import iconBuild from "@ktibow/iconset-material-symbols/build";
+import iconContacts from "@ktibow/iconset-material-symbols/contacts";
 import iconBaseline from "@ktibow/iconset-material-symbols/build-circle";
 
 import { page } from "$app/stores";
@@ -48,6 +49,13 @@ onMount(() => {
       selected={$page.url.pathname === "/catalog"}
       href="/catalog"
     />
+        <NavCMLXItem
+      variant="large"
+      icon={iconHandshake}
+      text="Послуги"
+      selected={$page.url.pathname === "/offers"}
+      href="/offers"
+    />
     <NavCMLXItem
       variant="large"
       icon={iconArticle}
@@ -62,12 +70,12 @@ onMount(() => {
       selected={$page.url.pathname === "/service"}
       href="/service"
     />
-    <NavCMLXItem
+        <NavCMLXItem
       variant="large"
-      icon={iconHandshake}
-      text="Послуги"
-      selected={$page.url.pathname === "/offers"}
-      href="/offers"
+      icon={iconContacts}
+      text="Контакти"
+      selected={$page.url.pathname === "/contacts"}
+      href="/contacts"
     />
   </NavCMLX>
 </div>
@@ -81,7 +89,7 @@ onMount(() => {
       variant="medium"
       icon={iconInfo}
       text="Про нас"
-      selected={$page.url.pathname === "/"}
+      selected={$page.url.pathname === "/" || $page.url.pathname === "/contacts"}
       href="/"
     />
     <NavCMLXItem
@@ -89,6 +97,13 @@ onMount(() => {
       icon={iconGrid}
       text="Каталог"
       selected={$page.url.pathname === "/catalog"}
+      href="/offers"
+    />
+        <NavCMLXItem
+      variant="medium"
+      icon={iconHandshake}
+      text="Послуги"
+      selected={$page.url.pathname === "/offers"}
       href="/offers"
     />
     <NavCMLXItem
@@ -104,13 +119,6 @@ onMount(() => {
       text="Сервіс"
       selected={$page.url.pathname === "/service"}
       href="/service"
-    />
-    <NavCMLXItem
-      variant="medium"
-      icon={iconHandshake}
-      text="Послуги"
-      selected={$page.url.pathname === "/offers"}
-      href="/offers"
     />
   </NavCMLX>
 </div>
@@ -124,7 +132,7 @@ onMount(() => {
       variant="compact"
       icon={iconInfo}
       text="Про нас"
-      selected={$page.url.pathname === "/"}
+      selected={$page.url.pathname === "/" || $page.url.pathname === "/contacts"}
       href="/"
     />
     <NavCMLXItem
@@ -133,6 +141,13 @@ onMount(() => {
       text="Каталог"
       selected={$page.url.pathname === "/catalog"}
       href="/catalog"
+    />
+        <NavCMLXItem
+      variant="compact"
+      icon={iconHandshake}
+      text="Послуги"
+      selected={$page.url.pathname === "/offers"}
+      href="/offers"
     />
     <NavCMLXItem
       variant="compact"
@@ -147,13 +162,6 @@ onMount(() => {
       text="Сервіс"
       selected={$page.url.pathname === "/service"}
       href="/service"
-    />
-    <NavCMLXItem
-      variant="compact"
-      icon={iconHandshake}
-      text="Послуги"
-      selected={$page.url.pathname === "/offers"}
-      href="/offers"
     />
   </NavCMLX>
 </div>

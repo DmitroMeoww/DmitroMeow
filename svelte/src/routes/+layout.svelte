@@ -4,5 +4,10 @@
 	let { children } = $props();
 
 </script>
+<style global>
+	:global(body) {
+		font-family: google-sans, sans-serif;
+	}
+</style>
 {@html `<style>${$blue_theme}</style>`}
 {@render children()}
