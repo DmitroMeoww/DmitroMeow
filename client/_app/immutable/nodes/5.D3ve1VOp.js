@@ -1,0 +1,1 @@
+import"../chunks/BCyM_82f.js";import"../chunks/EVpcWbUE.js";import{e,$ as t}from"../chunks/DcWvUvY3.js";import{h as a,S as r}from"../chunks/DiCXvHkm.js";function f(o){a("67057e",i=>{e(()=>{t.title="Контакти - OptaVideo"})}),r(o,{})}export{f as component};

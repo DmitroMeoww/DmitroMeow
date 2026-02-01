@@ -1,0 +1,1 @@
+import"../chunks/BCyM_82f.js";import"../chunks/EVpcWbUE.js";import{e as a,$ as t}from"../chunks/DcWvUvY3.js";import{h as e,S as r}from"../chunks/DiCXvHkm.js";function f(o){e("1uha8ag",i=>{a(()=>{t.title="OptaVideo"})}),r(o,{})}export{f as component};
